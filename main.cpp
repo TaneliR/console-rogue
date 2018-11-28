@@ -6,6 +6,7 @@ const int sizey = 19;
 const int sizex = 19;
 const int maxenemies = 3;
 int enemies;
+int deadenemies;
 char gameScreen[sizex][sizey];
 char player = '@';
 int playerx = 10;
@@ -99,8 +100,17 @@ void populateScreen() {
 		}
 	}
 	gameScreen[playerx][playery] = player;
+	int deadenemies = 0;
 	for (int i = 0; i < enemies; i++) {
 		gameScreen[enemylist[i].posx][enemylist[i].posy] = enemylist[i].character;
+		if (enemylist[i].character == 'D')
+		{
+			deadenemies++;
+			if (deadenemies >= enemies)
+			{
+				stairs.character = 'O';
+			}
+		}
 	}
 	gameScreen[stairs.posx][stairs.posy] = stairs.character;
 }
@@ -143,7 +153,11 @@ void hitOrWalk(int targetx,int targety) {
 			}
 		}
 	}
-	else if (gameScreen[targetx][targety] == stairs.character)
+	else if (gameScreen[targetx][targety] == '/')
+	{
+		
+	}
+	else if (gameScreen[targetx][targety] == 'O')
 	{
 		playerx = targetx;
 		playery = targety;

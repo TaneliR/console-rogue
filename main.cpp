@@ -9,44 +9,58 @@ char player = '@';
 int playerx = 10;
 int playery = 10;
 
+char enemy = 'G';
+int enemyx = 5;
+int enemyy = 5;
+
 void printScreen();
 void populateScreen();
+void flashScreen();
+void hitOrWalk(int targetx, int targety);
 
 int main()
 {
 	int input;
+	int direction;
 	populateScreen();
-	gameScreen[playerx][playery] = player;
 	printScreen();
 	bool gameloop = true;
 	while (gameloop) {
-		cout << "Move using 8,4,2,6";
-		cin >> input;
+		cout << "Move using the arrow keys";
+		input = _getch();
 		switch (input) {
-			case 8:{
+			case 72:{						// Pelaaja liikkuu ylös
 				if (playerx != 0) {
-					playerx--;
+					int tempx = playerx;
+					int tempy = playery;
+					hitOrWalk(--tempx, tempy); //playerx--
 					break;
 				}
 				else break;
 			}
-			case 4: {
+			case 75: {						// Pelaaja liikkuu vasemmalle
 				if (playery != 0) {
-					playery--;
+					int tempx = playerx;
+					int tempy = playery;
+					hitOrWalk(tempx, --tempy); //playery--
 					break;
 				}
 				else break;
 			}
-			case 2: {
+			case 80: {						// Pelaaja liikkuu alas
 				if (playerx != 18) {
-					playerx++;
+					int tempx = playerx;
+					int tempy = playery;
+					hitOrWalk(++tempx, tempy); //playerx++
 					break;
 				}
 				else break;
 			}
-			case 6: {
+			case 77: {						// Pelaaja liikkuu oikealle
 				if (playery != 18) {
-					playery++;
+					int tempx = playerx;
+					int tempy = playery;
+					hitOrWalk(tempx, ++tempy); //playery++	
 					break;
 				}
 				else break;
@@ -54,7 +68,6 @@ int main()
 		}
 		system("CLS");
 		populateScreen();
-		gameScreen[playerx][playery] = player;
 		printScreen();
 	}
 	system("pause");
@@ -68,6 +81,8 @@ void populateScreen() {
 			gameScreen[i][j] = '.';
 		}
 	}
+	gameScreen[playerx][playery] = player;
+	gameScreen[enemyx][enemyy] = enemy;
 }
 
 void printScreen() {
@@ -79,4 +94,26 @@ void printScreen() {
 		}
 		cout << endl;
 	}
+}
+
+void hitOrWalk(int targetx,int targety) {
+	if (gameScreen[targetx][targety] == 'G')
+	{
+		flashScreen();
+	}
+	else {
+		playerx = targetx;
+		playery = targety;
+	}
+}
+
+void flashScreen() {
+	for (int i = 0; i < sizex; ++i)
+	{
+		for (int j = 0; j < sizey; ++j)
+		{
+			gameScreen[i][j] = 'X';
+		}
+	}
+	printScreen();
 }

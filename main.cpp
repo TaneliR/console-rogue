@@ -4,6 +4,8 @@ using namespace std;
 
 const int sizey = 19;
 const int sizex = 19;
+const int maxenemies = 3;
+int enemies;
 char gameScreen[sizex][sizey];
 char player = '@';
 int playerx = 10;
@@ -14,14 +16,23 @@ int enemyx = 5;
 int enemyy = 5;
 
 void printScreen();
+void createEnemies();
 void populateScreen();
 void flashScreen();
 void hitOrWalk(int targetx, int targety);
 
+struct entity {
+	char character;
+	int posx;
+	int posy;
+};
+entity enemylist[maxenemies];
 int main()
 {
+	enemies = maxenemies;
 	int input;
 	int direction;
+	createEnemies();
 	populateScreen();
 	printScreen();
 	bool gameloop = true;
@@ -82,7 +93,18 @@ void populateScreen() {
 		}
 	}
 	gameScreen[playerx][playery] = player;
-	gameScreen[enemyx][enemyy] = enemy;
+	for (int i = 0; i < enemies; i++) {
+		gameScreen[enemylist[i].posx][enemylist[i].posy] = enemylist[i].character;
+	}
+	
+}
+
+void createEnemies() {
+	for (int i = 0; i < enemies; i++) {
+		enemylist[i].character = 'G';
+		enemylist[i].posx = rand() % 17;
+		enemylist[i].posy = rand() % 17;
+	}
 }
 
 void printScreen() {
@@ -100,6 +122,14 @@ void hitOrWalk(int targetx,int targety) {
 	if (gameScreen[targetx][targety] == 'G')
 	{
 		flashScreen();
+		for (int i = 0; i < enemies; i++) {
+			if (enemylist[i].posx == targetx && enemylist[i].posy == targety)
+			{
+				enemylist[i].character = 'D';
+				enemylist[i].posx = 100;
+				enemylist[i].posy = 100;
+			}
+		}
 	}
 	else {
 		playerx = targetx;
@@ -108,6 +138,7 @@ void hitOrWalk(int targetx,int targety) {
 }
 
 void flashScreen() {
+	system("CLS");
 	for (int i = 0; i < sizex; ++i)
 	{
 		for (int j = 0; j < sizey; ++j)

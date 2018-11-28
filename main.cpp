@@ -4,8 +4,10 @@ using namespace std;
 
 const int sizey = 19;
 const int sizex = 19;
-const int maxenemies = 10;
+const int maxenemies = 100;
+const int maxbutterflies = 100;
 int enemies;
+int butterflies;
 int health;
 int deadenemies;
 char gameScreen[sizex][sizey];
@@ -13,6 +15,15 @@ char player = '@';
 int playerx = 10;
 int playery = 10;
 
+struct entity {
+	char character;
+	int posx;
+	int posy;
+};
+entity enemylist[maxenemies];
+entity butterflylist[maxbutterflies];
+
+entity stairs;
 
 void printHealth();
 void printScreen();
@@ -20,24 +31,19 @@ void createEnemies();
 void createExit();
 void newFloor();
 void enemyMove();
+void randomMove(entity entitylist[], int entity);
 void gameOver();
-void checkForHit();
-void hit(int entity);
+void checkForHit(entity entitylist[]);
+void hit(entity entitylist[], int entity);
 void populateScreen();
 void flashScreen();
 void hitOrWalk(int targetx, int targety);
 
-struct entity {
-	char character;
-	int posx;
-	int posy;
-};
-entity enemylist[maxenemies];
 
-entity stairs;
 int main()
 {
 	enemies = 3;
+	butterflies = 1;
 	int input;
 	int direction;
 	health = 5;
@@ -105,13 +111,14 @@ void populateScreen() {
 		}
 	}
 	gameScreen[playerx][playery] = player;
-	int deadenemies = 0;
+	int catchedbutterflies = 0;
 	for (int i = 0; i < enemies; i++) {
+		gameScreen[butterflylist[i].posx][butterflylist[i].posy] = butterflylist[i].character;
 		gameScreen[enemylist[i].posx][enemylist[i].posy] = enemylist[i].character;
-		if (enemylist[i].character == 'D')
+		if (butterflylist[i].character == 'D')
 		{
-			deadenemies++;
-			if (deadenemies >= enemies)
+			catchedbutterflies++;
+			if (catchedbutterflies >= butterflies)
 			{
 				stairs.character = 'O';
 			}
@@ -125,6 +132,11 @@ void createEnemies() {
 		enemylist[i].character = 'G';
 		enemylist[i].posx = rand() % 17;
 		enemylist[i].posy = rand() % 17;
+	}
+	for (int i = 0; i < butterflies; i++) {
+		butterflylist[i].character = '%';
+		butterflylist[i].posx = rand() % 17;
+		butterflylist[i].posy = rand() % 17;
 	}
 }
 
@@ -156,13 +168,11 @@ void printHealth() {
 void hitOrWalk(int targetx,int targety) {
 	if (gameScreen[targetx][targety] == 'G')
 	{
-		flashScreen();
-		for (int i = 0; i < enemies; i++) {
-			if (enemylist[i].posx == targetx && enemylist[i].posy == targety)
-			{
-				hit(i);
-			}
-		}
+		checkForHit(enemylist);
+	}
+	else if (gameScreen[targetx][targety] == '%')
+	{
+		checkForHit(butterflylist);
 	}
 	else if (gameScreen[targetx][targety] == '/')
 	{
@@ -180,23 +190,27 @@ void hitOrWalk(int targetx,int targety) {
 		playery = targety;
 	}
 	enemyMove();
-	checkForHit();
+	checkForHit(enemylist);
+	checkForHit(butterflylist);
 }
 
-void checkForHit() {
+void checkForHit(entity entitylist[]) {
 	for (int i = 0; i < enemies; i++) {
-		if (enemylist[i].posx == playerx && enemylist[i].posy == playery)
+		if (entitylist[i].posx == playerx && entitylist[i].posy == playery)
 		{
 			flashScreen();
-			hit(i);
+			hit(entitylist, i);
 		}
 	}
 }
 
-void hit(int entity) {
-	enemylist[entity].character = 'D';
-	enemylist[entity].posx = 100;
-	enemylist[entity].posy = 100;
+void hit(entity entitylist[], int entity) {
+	entitylist[entity].character = 'D';
+	entitylist[entity].posx = 100;
+	entitylist[entity].posy = 100;
+	if (entitylist = butterflylist){
+
+	}
 }
 
 void enemyMove()
@@ -204,35 +218,46 @@ void enemyMove()
 	for (int i = 0; i < enemies; i++) {
 		if (enemylist[i].character == 'G')
 		{
-			int randomizer = rand() % 4;
+			randomMove(enemylist, i);
+		}
+	}
+	for (int i = 0; i < butterflies; i++) {
+		if (butterflylist[i].character == '%')
+		{
+			randomMove(butterflylist, i);
+		}
+	}
+}
+
+void randomMove(entity entitylist[], int entity)
+{
+	int randomizer = rand() % 4;
 			switch (randomizer) {
 			case 0: {
-				if (enemylist[i].posx != 0) {
-					enemylist[i].posx--;
+				if (entitylist[entity].posx != 0) {
+					entitylist[entity].posx--;
 					break;
 				}
 			}
 			case 1: {
-				if (enemylist[i].posy != 0) {
-					enemylist[i].posy--;
+				if (entitylist[entity].posy != 0) {
+					entitylist[entity].posy--;
 					break;
 				}
 			}
 			case 2: {
-				if (enemylist[i].posx != 18) {
-					enemylist[i].posx++;
+				if (entitylist[entity].posx != 18) {
+					entitylist[entity].posx++;
 					break;
 				}
 			}
 			case 3: {
-				if (enemylist[i].posy != 18) {
-					enemylist[i].posy++;
+				if (entitylist[entity].posy != 18) {
+					entitylist[entity].posy++;
 					break;
 				}
 			}
 			}
-		}
-	}
 }
 
 void newFloor()

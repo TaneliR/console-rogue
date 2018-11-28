@@ -1,5 +1,6 @@
 #include <iostream>
 #include <conio.h>
+#include <windows.h>
 using namespace std;
 
 const int sizey = 19;
@@ -11,7 +12,7 @@ int floornumber;
 int butterflies;
 int health;
 int deadenemies;
-char gameScreen[sizex][sizey];
+char gameScreen[100][100];
 char player = '@';
 int playerx = 10;
 int playery = 10;
@@ -39,15 +40,15 @@ void populateScreen();
 void hitScreen();
 void catchScreen();
 void hitOrWalk(int targetx, int targety);
-
+void printSlow(string stringtoprint);
 
 int main()
 {
-	health = 5;
+	health = 1;
 	enemies = 3;
 	butterflies = 1;
 	floornumber = 1;
-	
+	system("color 81");
 	createEntities(); //Luodaan kentt‰‰n viholliset, ker‰tt‰v‰t perhoset, sek‰ portaat seuraavaan kentt‰‰n
 	populateScreen(); //Laitetaan kaikki luodut asiat paikoilleen ja t‰ytet‰‰n loppukentt‰ "." merkeill‰
 	printScreen(); //Printataan kentt‰ konsoli-ikkunaan
@@ -103,7 +104,6 @@ int main()
 		populateScreen(); //T‰ytet‰‰n pelikentt‰ uusiksi pelaajan ja muiden hahmojen liikkumisen mukaan
 		printScreen(); //Printataan p‰ivittynyt kentt‰
 	}
-	system("pause");
 }
 
 void populateScreen() {
@@ -300,11 +300,22 @@ void catchScreen() {					// Ker‰‰misruutu
 
 void gameOver()							// Jos pelaaja menett‰‰ kaikki el‰m‰pisteet, printataan seuraavat asiat
 {
-	enemies = 3;						// Alustetaan vihollism‰‰r‰ silt‰ varalta, ett‰ pelaaja tahtoo pelata uudestaan
+	enemies = 2;						// Alustetaan vihollism‰‰r‰ silt‰ varalta, ett‰ pelaaja tahtoo pelata uudestaan
 	health = 5;							// Alustetaan el‰m‰pisteet alkuper‰iseen arvoon
 	system("CLS");						// Tyhjennet‰‰n ruutu
-	cout << "Game Over!" << endl;
-	cout << "Press any key to try again" << endl;
+	//cout << "Game Over!" << endl;
+	printSlow("           Game Over!");
+	cout << endl;
+	printSlow("    Press any key to try again");
+	cout << endl;
+	printSlow("-------------------------------------");
 	_getch();							// Odotetaan k‰ytt‰j‰n inputtia
 	newFloor();							// Uusi kentt‰
+}
+
+void printSlow(string stringtoprint) {
+	for (int i = 0; i < stringtoprint.size(); i++) {
+		cout << stringtoprint[i];
+		Sleep(20);
+	}
 }

@@ -6,20 +6,23 @@ const int sizey = 19;
 const int sizex = 19;
 const int maxenemies = 3;
 int enemies;
+int health;
 int deadenemies;
 char gameScreen[sizex][sizey];
 char player = '@';
 int playerx = 10;
 int playery = 10;
 
-char enemy = 'G';
-int enemyx = 5;
-int enemyy = 5;
 
+void printHealth();
 void printScreen();
 void createEnemies();
 void createExit();
 void newFloor();
+void enemyMove();
+void gameOver();
+void checkForHit();
+void hit(int entity);
 void populateScreen();
 void flashScreen();
 void hitOrWalk(int targetx, int targety);
@@ -37,13 +40,16 @@ int main()
 	enemies = maxenemies;
 	int input;
 	int direction;
-	
+	health = 5;
+
 	createEnemies();
 	createExit();
 	populateScreen();
 	printScreen();
 	bool gameloop = true;
 	while (gameloop) {
+		cout << "HEALTH: ";
+		printHealth();
 		cout << "Move using the arrow keys";
 		input = _getch();
 		switch (input) {
@@ -140,6 +146,14 @@ void printScreen() {
 	}
 }
 
+void printHealth() {
+	for (int i = 0; i < health; i++)
+	{
+		cout << "*";
+	}
+	cout << endl;
+}
+
 void hitOrWalk(int targetx,int targety) {
 	if (gameScreen[targetx][targety] == 'G')
 	{
@@ -147,9 +161,7 @@ void hitOrWalk(int targetx,int targety) {
 		for (int i = 0; i < enemies; i++) {
 			if (enemylist[i].posx == targetx && enemylist[i].posy == targety)
 			{
-				enemylist[i].character = 'D';
-				enemylist[i].posx = 100;
-				enemylist[i].posy = 100;
+				hit(i);
 			}
 		}
 	}
@@ -167,10 +179,65 @@ void hitOrWalk(int targetx,int targety) {
 		playerx = targetx;
 		playery = targety;
 	}
+	enemyMove();
+	checkForHit();
+}
+
+void checkForHit() {
+	for (int i = 0; i < enemies; i++) {
+		if (enemylist[i].posx == playerx && enemylist[i].posy == playery)
+		{
+			flashScreen();
+			hit(i);
+		}
+	}
+}
+
+void hit(int entity) {
+	enemylist[entity].character = 'D';
+	enemylist[entity].posx = 100;
+	enemylist[entity].posy = 100;
+}
+
+void enemyMove()
+{
+	for (int i = 0; i < enemies; i++) {
+		if (enemylist[i].character == 'G')
+		{
+			int randomizer = rand() % 4;
+			switch (randomizer) {
+			case 0: {
+				if (enemylist[i].posx != 0) {
+					enemylist[i].posx--;
+					break;
+				}
+			}
+			case 1: {
+				if (enemylist[i].posy != 0) {
+					enemylist[i].posy--;
+					break;
+				}
+			}
+			case 2: {
+				if (enemylist[i].posx != 18) {
+					enemylist[i].posx++;
+					break;
+				}
+			}
+			case 3: {
+				if (enemylist[i].posy != 18) {
+					enemylist[i].posy++;
+					break;
+				}
+			}
+			}
+		}
+	}
 }
 
 void newFloor()
 {
+	health += 2;
 	int playerx = 10;
 	int playery = 10;
 	createEnemies();
@@ -181,6 +248,11 @@ void newFloor()
 
 void flashScreen() {
 	system("CLS");
+	health--;
+	if (health <= 0) {
+		gameOver();
+		health = 5;
+	}
 	for (int i = 0; i < sizex; ++i)
 	{
 		for (int j = 0; j < sizey; ++j)
@@ -189,4 +261,13 @@ void flashScreen() {
 		}
 	}
 	printScreen();
+}
+
+void gameOver()
+{
+	system("CLS");
+	cout << "Game Over!" << endl;
+	cout << "Press any key to try again" << endl;
+	_getch();
+	newFloor();
 }

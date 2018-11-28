@@ -4,7 +4,7 @@ using namespace std;
 
 const int sizey = 19;
 const int sizex = 19;
-const int maxenemies = 3;
+const int maxenemies = 10;
 int enemies;
 int health;
 int deadenemies;
@@ -37,11 +37,10 @@ entity enemylist[maxenemies];
 entity stairs;
 int main()
 {
-	enemies = maxenemies;
+	enemies = 3;
 	int input;
 	int direction;
 	health = 5;
-
 	createEnemies();
 	createExit();
 	populateScreen();
@@ -173,6 +172,7 @@ void hitOrWalk(int targetx,int targety) {
 	{
 		playerx = targetx;
 		playery = targety;
+		enemies++;
 		newFloor();
 	}
 	else {
@@ -251,7 +251,6 @@ void flashScreen() {
 	health--;
 	if (health <= 0) {
 		gameOver();
-		health = 5;
 	}
 	for (int i = 0; i < sizex; ++i)
 	{
@@ -265,6 +264,8 @@ void flashScreen() {
 
 void gameOver()
 {
+	enemies = 3;
+	health = 5;
 	system("CLS");
 	cout << "Game Over!" << endl;
 	cout << "Press any key to try again" << endl;

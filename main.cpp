@@ -17,6 +17,8 @@ int enemyy = 5;
 
 void printScreen();
 void createEnemies();
+void createExit();
+void newFloor();
 void populateScreen();
 void flashScreen();
 void hitOrWalk(int targetx, int targety);
@@ -27,12 +29,16 @@ struct entity {
 	int posy;
 };
 entity enemylist[maxenemies];
+
+entity stairs;
 int main()
 {
 	enemies = maxenemies;
 	int input;
 	int direction;
+	
 	createEnemies();
+	createExit();
 	populateScreen();
 	printScreen();
 	bool gameloop = true;
@@ -96,7 +102,7 @@ void populateScreen() {
 	for (int i = 0; i < enemies; i++) {
 		gameScreen[enemylist[i].posx][enemylist[i].posy] = enemylist[i].character;
 	}
-	
+	gameScreen[stairs.posx][stairs.posy] = stairs.character;
 }
 
 void createEnemies() {
@@ -105,6 +111,12 @@ void createEnemies() {
 		enemylist[i].posx = rand() % 17;
 		enemylist[i].posy = rand() % 17;
 	}
+}
+
+void createExit() {
+	stairs.character = '/';
+	stairs.posx = rand() % 17;
+	stairs.posy = rand() % 17;
 }
 
 void printScreen() {
@@ -131,10 +143,26 @@ void hitOrWalk(int targetx,int targety) {
 			}
 		}
 	}
+	else if (gameScreen[targetx][targety] == stairs.character)
+	{
+		playerx = targetx;
+		playery = targety;
+		newFloor();
+	}
 	else {
 		playerx = targetx;
 		playery = targety;
 	}
+}
+
+void newFloor()
+{
+	int playerx = 10;
+	int playery = 10;
+	createEnemies();
+	createExit();
+	populateScreen();
+	printScreen();
 }
 
 void flashScreen() {

@@ -45,8 +45,8 @@ void printSlow(string stringtoprint);
 int main()
 {
 	health = 1;
-	enemies = 3;
-	butterflies = 1;
+	enemies = 4;
+	butterflies = 2;
 	floornumber = 1;
 	system("color 81");
 	createEntities(); //Luodaan kenttään viholliset, kerättävät perhoset, sekä portaat seuraavaan kenttään
@@ -117,8 +117,10 @@ void populateScreen() {
 	gameScreen[playerx][playery] = player; // Lisätään pelaaja paikalleen
 	int catchedbutterflies = 0;				// Alustetaan kentän voittoehto myöhempää tarkastelua varten
 	for (int i = 0; i < enemies; i++) {
-		gameScreen[butterflylist[i].posx][butterflylist[i].posy] = butterflylist[i].character; // Lisätään perhoset paikoilleen (tämä käy turhaa muutaman kerran, koska perhosia vähemmän kuin pelaajia, mutta koska loppulista on tyhjä, ei tule ongelmia)
 		gameScreen[enemylist[i].posx][enemylist[i].posy] = enemylist[i].character; // Lisätään viholliset paikoilleen
+	}
+	for (int i = 0; i < butterflies; i++) { // Lisätään perhoset paikoilleen
+		gameScreen[butterflylist[i].posx][butterflylist[i].posy] = butterflylist[i].character;
 		if (butterflylist[i].character == 'D')				// Katsotaan listalta kerättyjen perhosten määrä (kerätty perhonen menee pois pelikentältä ja sen merkki muuttuu "D" merkiksi)
 		{
 			catchedbutterflies++;
@@ -300,22 +302,34 @@ void catchScreen() {					// Keräämisruutu
 
 void gameOver()							// Jos pelaaja menettää kaikki elämäpisteet, printataan seuraavat asiat
 {
-	enemies = 2;						// Alustetaan vihollismäärä siltä varalta, että pelaaja tahtoo pelata uudestaan
+	floornumber = 0;
+	enemies = 3;						// Alustetaan vihollismäärä siltä varalta, että pelaaja tahtoo pelata uudestaan
 	health = 5;							// Alustetaan elämäpisteet alkuperäiseen arvoon
 	system("CLS");						// Tyhjennetään ruutu
 	//cout << "Game Over!" << endl;
-	printSlow("           Game Over!");
-	cout << endl;
-	printSlow("    Press any key to try again");
-	cout << endl;
-	printSlow("-------------------------------------");
-	_getch();							// Odotetaan käyttäjän inputtia
+	//printSlow("           Game Over!");
+	//cout << endl;
+	//printSlow("    Press any key to try again");
+	//cout << endl;
+	//printSlow("-------------------------------------");
+	string offset = " ";
+	while (!_kbhit()) { // Odotetaan käyttäjän inputtia
+		char R[15] = { '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+		char color_string[20];
+		int Ra = rand() % 15;
+		int Rb = rand() % 15;
+		sprintf_s(color_string, "color %c%c", R[Ra], R[Rb]);
+		system(color_string);
+		Sleep(20);
+		printSlow("GAME OVER   ---press any key---   ");
+		offset += " ";
+	}
 	newFloor();							// Uusi kenttä
 }
 
-void printSlow(string stringtoprint) {
+void printSlow(string stringtoprint) { // Printtaa stringin kirjain kerrallaan
 	for (int i = 0; i < stringtoprint.size(); i++) {
 		cout << stringtoprint[i];
-		Sleep(20);
+		Sleep(10);
 	}
 }

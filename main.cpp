@@ -51,7 +51,7 @@ void scoreScreen();
 int main()
 {
 	score = 0;
-	health = 1;
+	health = 5;
 	enemies = 4;
 	butterflies = 2;
 	floornumber = 1;

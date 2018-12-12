@@ -1,2 +1,4 @@
 ﻿  main.cpp
+c:\users\marsu\documents\jamk\ohjelmoinnin perusteet\harjoitukset\console-rogue\main.cpp(338): warning C4018: '<': signed/unsigned mismatch
   roguelike.vcxproj -> C:\Users\Marsu\Documents\JAMK\ohjelmoinnin perusteet\harjoitukset\console-rogue\Debug\roguelike.exe
+  roguelike.vcxproj -> C:\Users\Marsu\Documents\JAMK\ohjelmoinnin perusteet\harjoitukset\console-rogue\Debug\roguelike.pdb (Partial -> Full PDB)

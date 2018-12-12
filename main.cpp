@@ -1,6 +1,8 @@
 #include <iostream>
+#include <fstream>
 #include <conio.h>
 #include <windows.h>
+
 using namespace std;
 
 const int sizey = 19;
@@ -44,7 +46,7 @@ void hitOrWalk(int targetx, int targety);
 void printSlow(string stringtoprint);
 void gotoxy(int x, int y);
 void startScreen();
-void hiscoreScreen();
+void scoreScreen();
 
 int main()
 {
@@ -54,14 +56,13 @@ int main()
 	butterflies = 2;
 	floornumber = 1;
 	startScreen();
-	_getch();								//Pys‰ytet‰‰n pelikent‰n generointi, jotta startscreen j‰‰ n‰kyviin kunnes pelaaja painaa jotain
 	createEntities();						//Luodaan kentt‰‰n viholliset, ker‰tt‰v‰t perhoset, sek‰ portaat seuraavaan kentt‰‰n
 	populateScreen();						//Laitetaan kaikki luodut asiat paikoilleen ja t‰ytet‰‰n loppukentt‰ "." merkeill‰
 	printScreen();							//Printataan kentt‰ konsoli-ikkunaan
 	
 	int input = 0;
 	while (input != 27) {
-		gotoxy(sizex+1, 0);
+		gotoxy(sizex+1, 0);					//Siirret‰‰n konsolin kursori pelikent‰n oikeaan laitaan, koska siell‰ enemm‰n tyhj‰‰ tilaa UI:lle
 		cout << "HEALTH: ";
 		printHealth();
 		gotoxy(sizex + 1, 1);
@@ -324,12 +325,12 @@ void gameOver()							// Jos pelaaja menett‰‰ kaikki el‰m‰pisteet, printataan se
 		sprintf_s(color_string, "color %c%c", R[Ra], R[Rb]);						// Tehd‰‰n string kahdesta yll‰ olevan listan random arvosta
 		system(color_string);														// Muutetaan konsolin v‰rit kyseisiin v‰reihin
 		Sleep(20);
-		printSlow("GAME OVER   ---press any key---   ");
+		printSlow("GAME OVER   ---press enter---   ");
 	}
 	system("CLS");
 	cin.ignore();
+	scoreScreen();
 	startScreen();
-	_getch();
 	newFloor();							// Uusi kentt‰
 }
 
@@ -363,9 +364,18 @@ void startScreen()
 	cout << "and stairs to the next floor will open(O)" << endl;
 	cout << "Watch out for the goblins(G), though!" << endl;
 	cout << "                                     " << endl;
-	cout << "      Press any key to start         " << endl;
+	cout << "Press any key to start or ESC to quit" << endl;
+	_getch();													//Pys‰ytet‰‰n ohjelman ajo, jotta startscreen j‰‰ n‰kyviin kunnes pelaaja painaa jotain
 }
 
-void hiscoreScreen() {
-
+void scoreScreen() {
+	system("color 5E");
+	cout << " _______ _______  _____   ______ _______" << endl;
+	cout << " |______ |       |     | |_____/ |______" << endl;
+	cout << " ______| |_____  |_____| |    \\_ |______" << endl;
+	cout << "                                                           " << endl;
+	cout << "-----------------------------------------" << endl;
+	cout << "Congratulations! You got : " << score << " points";
+	score = 0;
+	_getch();
 }

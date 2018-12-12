@@ -43,19 +43,22 @@ void catchScreen();
 void hitOrWalk(int targetx, int targety);
 void printSlow(string stringtoprint);
 void gotoxy(int x, int y);
+void startScreen();
+void hiscoreScreen();
 
 int main()
 {
 	score = 0;
-	health = 5;
+	health = 1;
 	enemies = 4;
 	butterflies = 2;
 	floornumber = 1;
-	system("color 81");
+	startScreen();
+	_getch();								//Pys‰ytet‰‰n pelikent‰n generointi, jotta startscreen j‰‰ n‰kyviin kunnes pelaaja painaa jotain
 	createEntities();						//Luodaan kentt‰‰n viholliset, ker‰tt‰v‰t perhoset, sek‰ portaat seuraavaan kentt‰‰n
 	populateScreen();						//Laitetaan kaikki luodut asiat paikoilleen ja t‰ytet‰‰n loppukentt‰ "." merkeill‰
 	printScreen();							//Printataan kentt‰ konsoli-ikkunaan
-
+	
 	int input = 0;
 	while (input != 27) {
 		gotoxy(sizex+1, 0);
@@ -65,14 +68,6 @@ int main()
 		cout << "FLOOR: " << floornumber;
 		gotoxy(sizex + 1, 2);
 		cout << "SCORE: " << score;
-		gotoxy(sizex + 1, 3);
-		cout << "Move using the arrow keys";
-		gotoxy(sizex + 1, 4);
-		cout << "Try to catch every butterfly(%)";
-		gotoxy(sizex + 1, 5);
-		cout << "and stairs to the next floor will open(O)";
-		gotoxy(sizex + 1, 7);
-		cout << "Watch out for the goblins(G), though!";
 		gotoxy(0, 0);
 		input = _getch();
 		switch (input) {
@@ -320,24 +315,21 @@ void gameOver()							// Jos pelaaja menett‰‰ kaikki el‰m‰pisteet, printataan se
 	enemies = 3;						// Alustetaan vihollism‰‰r‰ uudelle pelikerralle
 	health = 5;							// Alustetaan el‰m‰pisteet uudelle pelikerralle 
 	system("CLS");						// Tyhjennet‰‰n ruutu
-	//cout << "Game Over!" << endl;
-	//printSlow("           Game Over!");
-	//cout << endl;
-	//printSlow("    Press any key to try again");
-	//cout << endl;
-	//printSlow("-------------------------------------");
-	string offset = " ";
-	while (!_kbhit()) { // Odotetaan k‰ytt‰j‰n inputtia
-		char R[15] = { '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+
+	while (!_kbhit()) {					// Odotetaan k‰ytt‰j‰n inputtia
+		char R[15] = { '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' }; // Listataan v‰rivaihtoehdot
 		char color_string[20];
 		int Ra = rand() % 15;
 		int Rb = rand() % 15;
-		sprintf_s(color_string, "color %c%c", R[Ra], R[Rb]);
-		system(color_string);
+		sprintf_s(color_string, "color %c%c", R[Ra], R[Rb]);						// Tehd‰‰n string kahdesta yll‰ olevan listan random arvosta
+		system(color_string);														// Muutetaan konsolin v‰rit kyseisiin v‰reihin
 		Sleep(20);
 		printSlow("GAME OVER   ---press any key---   ");
-		offset += " ";
 	}
+	system("CLS");
+	cin.ignore();
+	startScreen();
+	_getch();
 	newFloor();							// Uusi kentt‰
 }
 
@@ -348,10 +340,32 @@ void printSlow(string stringtoprint) { // Printtaa stringin kirjain kerrallaan
 	}
 }
 
-void gotoxy(int x, int y)
+void gotoxy(int x, int y)				// Siirt‰‰ konsolin osoittimen haluttuun kohtaan
 {
 	COORD coord;
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void startScreen()
+{
+	system("color 5E");											// M‰‰ritell‰‰n pelin default v‰ri
+	cout << " _____     _   _           ___ _     " << endl;
+	cout << "| __  |_ _| |_| |_ ___ ___|  _| |_ _ " << endl;
+	cout << "| __ -| | |  _|  _| -_|  _|  _| | | |" << endl;
+	cout << "|_____|___|_| |_| |___|_| |_| |_|_  |" << endl;
+	cout << "                                |___|" << endl;
+	cout << "                                     " << endl;
+	cout << "-------------------------------------" << endl;
+	cout << "      Move using the arrow keys      " << endl;
+	cout << "   Try to catch every butterfly(%)   " << endl;
+	cout << "and stairs to the next floor will open(O)" << endl;
+	cout << "Watch out for the goblins(G), though!" << endl;
+	cout << "                                     " << endl;
+	cout << "      Press any key to start         " << endl;
+}
+
+void hiscoreScreen() {
+
 }
